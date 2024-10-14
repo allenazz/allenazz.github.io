@@ -1,0 +1,261 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Swin-unet | 高桥凉介的博客</title><meta name="author" content="高桥凉介"><meta name="copyright" content="高桥凉介"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Swin-Unet:Unet-like Pure Transformer for Medical Image Segmentatio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swin-unet">
+<meta property="og:url" content="http://example.com/2024/10/12/Swin-unet/index.html">
+<meta property="og:site_name" content="高桥凉介的博客">
+<meta property="og:description" content="Swin-Unet:Unet-like Pure Transformer for Medical Image Segmentatio">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/10/12/Swin-unet/cover.png">
+<meta property="article:published_time" content="2024-10-12T08:13:29.000Z">
+<meta property="article:modified_time" content="2024-10-14T09:30:39.795Z">
+<meta property="article:author" content="高桥凉介">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="PyTorch">
+<meta property="article:tag" content="深度学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/10/12/Swin-unet/cover.png"><link rel="shortcut icon" href="/img/a.png"><link rel="canonical" href="http://example.com/2024/10/12/Swin-unet/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: {"chs_to_cht":"你已切换为繁体中文","cht_to_chs":"你已切换为简体中文","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Swin-unet',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-14 17:30:39'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/zz.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/2024/10/12/Swin-unet/top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="高桥凉介的博客"><span class="site-name">高桥凉介的博客</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Swin-unet</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-12T08:13:29.000Z" title="发表于 2024-10-12 16:13:29">2024-10-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-14T09:30:39.795Z" title="更新于 2024-10-14 17:30:39">2024-10-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Swin-unet"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Swin-Unet"><a href="#Swin-Unet" class="headerlink" title="Swin-Unet"></a>Swin-Unet</h1><h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>​	在过去几年中，卷积神经网络（CNN）在医学图像分析领域取得了里程碑式的进展，尤其是基于U型结构和跳跃连接的深度神经网络被广泛应用于各种医学图像任务中。然而，尽管CNN取得了优异的表现，但由于卷积操作的局部性，它无法很好地学习全局和长距离语义信息的交互。在本文中，我们提出了Swin-Unet，这是一个类似于Unet的纯Transformer，用于医学图像分割。 将标记化的图像块输入到基于Transformer的带有跳跃连接的U型编码器-解码器架构中进行局部全局语义特征学习。具体而言，我们使用<strong>带有移位窗口的分层Swin Transformer作为编码器来提取上下文特征</strong>。并<strong>设计了一个带有块扩展层的对称Swin Transformer</strong>解码器来执行上采样操作以恢复特征图的空间分辨率。在对输入和输出直接进行 4 倍下采样和上采样的情况下，在多器官和心脏分割任务上的实验表明，纯基于 Transformer 的 U 型编码器-解码器网络优于使用全卷积或 Transformer 与卷积组合的方法。代码和训练好的模型将在 <a target="_blank" rel="noopener" href="https://github.com/HuCaoFighting/Swin-Unet">https://github.com/HuCaoFighting/Swin-Unet</a> 上公开发布。</p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>​	得益于深度学习的发展，计算机视觉技术在医学图像分析中得到了广泛的应用。图像分割是医学图像分析的重要组成部分。特别是准确、鲁棒的医学图像分割可以在计算机辅助诊断和图像引导临床手术中发挥基石作用。</p>
+<p>​	现有的医学图像分割方法主要依赖于具有 U 型结构的全卷积神经网络 (FCNN，<strong>顾名思义，就是神经网络全部由卷积层构成。与经典CNN网络的区别在于，它将CNN网络中的全连接层全部用卷积层替换。</strong>) 。典型的 U 型网络 U-Net 由具有跳跃连接的对称编码器-解码器组成。在编码器中，使用一系列卷积层和连续的下采样层来提取具有大感受野的深度特征。然后，解码器将提取的深度特征上采样到输入分辨率进行像素级语义预测，并将来自编码器的不同尺度的高分辨率特征与跳跃连接融合，以减轻下采样造成的空间信息丢失。凭借如此优雅的结构设计，U-Net 在各种医学成像应用中取得了巨大成功。遵循这一技术路线，已经开发出许多算法，例如 3D U-Net 、Res-UNet 、U-Net++  和 UNet3+ ，用于各种医学成像模态的图像和体积分割。这些基于 FCNN 的方法在心脏分割、器官分割和病变分割中的优异表现证明了 CNN 具有强大的学习判别特征的能力。</p>
+<p>​	目前，虽然基于 CNN 的方法在医学图像分割领域取得了优异的表现，但仍然不能完全满足医学应用对于分割精度的严格要求。图像分割在医学图像分析中仍然是一项具有挑战性的任务。由于卷积运算的内在局部性，基于 CNN 的方法很难学习明确的全局和长距离语义信息交互 。一些研究试图通过使用空洞卷积层 、自注意机制  和图像金字塔 来解决这个问题。然而，这些方法在建模长距离依赖关系方面仍然存在局限性。最近，受到 Transformer 在自然语言处理 (NLP) 领域 巨大成功的启发，研究人员试图将 Transformer 带入视觉领域。在 [17] 中，提出了视觉变换器 (ViT) 来执行图像识别任务。以具有位置嵌入的 2D 图像块作为输入，并在大数据集上进行预训练，ViT 实现了与基于 CNN 的方法相当的性能。此外，[18] 提出了数据高效图像变换器 (DeiT)，这表明 Transformer 可以在中等规模的数据集上进行训练，并且将其与蒸馏方法相结合可以获得更强大的 Transformer。[19] 开发了一种分层的 Swin Transformer。以 Swin Transformer 作为视觉主干，[19] 的作者在图像分类、目标检测和语义分割方面取得了最先进的性能。ViT、DeiT 和 Swin Transformer 在图像识别任务上的成功证明了 Transformer 在视觉领域的应用潜力。</p>
+<blockquote>
+<p>全局和长距离语义信息交互是指在图像或其他数据中的不同区域之间进行信息交流和理解的能力。在视觉任务中，尤其是图像分割和目标检测中，不同对象或区域之间可能存在重要的关联性和语义信息。</p>
+<ol>
+<li><strong>全局信息</strong>：指整个图像中包含的所有信息，这些信息常常是多个对象、背景以及它们之间的关系的综合表现。在处理复杂场景时，全局信息可以帮助模型更好地理解图像的整体结构和语义。</li>
+<li><strong>长距离依赖</strong>：在图像中，某些重要特征或对象可能相隔较远，传统的卷积神经网络由于其局部感受野的特性，可能难以捕捉这些远离的区域之间的依赖关系。长距离依赖主要体现在需要跨越较大空间距离的上下文信息，这对于理解图像中的复杂情况尤为重要。</li>
+</ol>
+<p>通过引入如 Transformer 的自注意力机制，可以实现全局和长距离信息的交互。自注意力机制允许模型在处理某一位置的特征时，同时考虑到图像中其他所有位置的特征，从而有效地捕获整体语义和远距离的上下文信息。这种能力对于提高图像分析任务的准确性和鲁棒性具有重要意义</p>
+<p>数据高效图像变换器 (DeiT) 是一种改进的视觉变换器，它的提出主要是为了解决在较小或中等规模数据集上训练 Transformer 模型时，数据需求量大的问题。DeiT 通过引入蒸馏方法，能够在较少的数据上实现良好的性能，具体来说，其工作原理如下：</p>
+<ol>
+<li><strong>蒸馏方法</strong>：DeiT 使用了一种新的训练策略，称为“知识蒸馏”（Knowledge Distillation）。在这个过程中，DeiT 模型通过与一个预训练的强大教师模型（通常是一个较大规模的 CNN 模型）进行学习，从教师模型中获取知识。教师模型的输出可以作为训练的参考，帮助学生模型（DeiT）更好地理解特征。</li>
+<li><strong>数据效率</strong>：通过这种蒸馏策略，DeiT 能够在有限的数据集上获得与大型数据集上训练的模型相当的性能。这样，研究人员和开发者在处理有限的数据时，不必担心模型性能下降。</li>
+<li><strong>模型架构</strong>：DeiT 的架构基于 ViT，但在设计上进行了调整，以便适应蒸馏过程，提高了模型的表示能力和训练效率。</li>
+</ol>
+</blockquote>
+<p>​	受 Swin Transformer  成功的启发，我们提出了 Swin-Unet，以利用 Transformer 的强大功能进行 2D 医学图像分割。据我们所知，Swin-Unet 是第一个纯基于 Transformer 的 U 形架构，由编码器、瓶颈、解码器和跳过连接组成。编码器、瓶颈和解码器均基于 Swin Transformer 块 构建。输入的医学图像被拆分成不重叠的图像块。每个patch被视为一个token，输入到基于Transformer的编码器中学习深度特征表示。提取出的上下文特征随后通过带有patch扩展层的解码器进行上采样，并通过跳跃连接与编码器的多尺度特征融合，恢复特征图的空间分辨率并进一步进行分割预测。在多器官和心脏分割数据集上的大量实验表明，该方法具有良好的分割精度和鲁棒的泛化能力。具体来说，我们的贡献可以概括为：（1）基于Swin Transformer模块，我们构建了一个带有跳跃连接的对称编码器-解码器架构。在编码器中，实现了从局部到全局的自注意力；在解码器中，将全局特征上采样到输入分辨率以进行相应的像素级分割预测。（2）开发了patch扩展层，无需使用卷积或插值运算即可实现上采样和特征维数增加。 （3）实验中发现skip connection对于Transformer同样有效，因此最终构建了一个纯基于Transformer的带有skip connection的U型Encoder-Decoder架构，命名为Swin-Unet。</p>
+<h2 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h2><p>​	<strong>基于CNN的方法：</strong>早期的医学图像分割方法主要是基于轮廓和基于传统机器学习的算法。随着深度CNN的发展，U-Net在[3]中被提出用于医学图像分割。由于U型结构的简单性和优越的性能，各种Unet-like方法不断涌现，如Res-UNet、Dense-UNet、U-Net++和UNet3+。并且也被引入到3D医学图像分割领域，如3D-Unet和V-Net。 目前，基于CNN的方法凭借其强大的表征能力，在医学图像分割领域取得了巨大的成功。</p>
+<p>​	<strong>视觉变换器：</strong>Transformer 最早是在 [15] 中为机器翻译任务提出的。在 NLP 领域，基于 Transformer 的方法在各种任务中都取得了最先进的性能 。在 Transformer 成功的推动下，研究人员在 [17] 中引入了一种开创性的视觉变换器 (ViT)，它在图像识别任务上实现了令人印象深刻的速度-准确度权衡。与基于 CNN 的方法相比，ViT 的缺点是它需要在自己的大型数据集上进行预训练。为了减轻训练 ViT 的难度，Deit 描述了几种训练策略，使 ViT 能够在 ImageNet 上进行良好的训练。最近，基于 ViT 已经完成了几项出色的工作 。值得一提的是，一种高效的分层视觉变换器，称为 Swin Transformer，在 [19] 中被提出作为视觉主干。基于移位窗口机制，Swin Transformer 在图像分类、目标检测、语义分割等多种视觉任务上取得了最佳性能。在本研究中，我们尝试使用 Swin Transformer 块作为基本单元，构建一个带有跳跃连接的 U 型编码器 - 解码器架构，用于医学图像分割，从而为 Transformer 在医学图像领域的发展提供一个基准比较。</p>
+<p>​	<strong>自注意力&#x2F;Transformer对CNN的补充：</strong>近年来，研究人员试图将自注意力机制引入CNN，以提高网络性能。在[12]中，带有加性注意门的跳跃连接被集成在U形架构中，以执行医学图像分割。然而，这仍然是基于CNN的方法。目前，人们正在努力将CNN和Transformer结合起来，以打破CNN在医学图像分割中的主导地位[2,27,1]。在[2]中，作者将Transformer与CNN结合起来，构成了一个用于二维医学图像分割的强编码器。与[2]类似，[27]和[28]利用Transformer和CNN的互补性来提高模型的分割能力。目前，Transformer与CNN的各种组合被应用于多模态脑肿瘤分割[29]和三维医学图像分割[1,30]。与上述方法不同，我们尝试探索纯Transformer在医学图像分割中的应用潜力</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><h3 id="架构概述"><a href="#架构概述" class="headerlink" title="架构概述"></a>架构概述</h3><p>​	所提出的 Swin-Unet 的整体架构如图 1 所示。 Swin-Unet 由编码器、瓶颈、解码器和跳过连接组成。Swin-Unet 的基本单元是 Swin Transformer 块 [19]。对于编码器，为了将输入转换为序列嵌入，医学图像被分割成不重叠的块，块大小为 4×4。通过这种划分方法，每个块的特征维度变为 4×4×3 &#x3D; 48。此外，应用线性嵌入层将特征维度投影到任意维度（表示为 C）。转换后的patch tokens经过多个 Swin Transformer 块和Patch Merging以生成分层特征表示。具体而言，Patch Merging负责下采样和增加维度，Swin Transformer 块负责特征表示学习。受 U-Net  的启发，我们设计了一个基于对称变压器的解码器。解码器由 Swin Transformer 模块和 patch expanding层组成。提取的上下文特征通过跳跃连接与来自编码器的多尺度特征融合，以补充因下采样造成的空间信息丢失。与块合并层相比，专门设计了一个 patch expanding层来执行上采样。 patch expanding将相邻维度的特征图重塑为具有 2 倍上采样分辨率的大特征图。最后，使用最后一个 patch expanding层执行 4 倍上采样，将特征图的分辨率恢复为输入分辨率（W×H），然后在这些上采样特征上应用线性投影层以输出像素级分割预测。</p>
+<p><img src="/2024/10/12/Swin-unet/1.jpg" alt="image-20241013180328363"></p>
+<blockquote>
+<p>“Patch tokens” 是深度学习中的一个概念，尤其在视觉模型（如 Vision Transformer，ViT）中被广泛应用。这一概念主要涉及如何将图像转换为一种适合于 Transformer 处理的形式。以下是对“patch tokens”的详细解释：</p>
+<h3 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. <strong>定义</strong></h3><ul>
+<li><strong>Patch Tokens</strong>：在处理图像时，首先将图像划分为多个小块（patch），每个小块被称为一个“patch”。这些小块被展平并转换为一维向量，随后形成的向量序列便称为“patch tokens”。每个 patch token 表示相应小块的特征。</li>
+</ul>
+<h3 id="2-如何生成-Patch-Tokens"><a href="#2-如何生成-Patch-Tokens" class="headerlink" title="2. 如何生成 Patch Tokens"></a>2. <strong>如何生成 Patch Tokens</strong></h3><ul>
+<li><strong>划分图像</strong>：例如，将一幅图像划分为若干个 大小的块（如 16x16 像素）。</li>
+<li><strong>展平处理</strong>：将每个小块展平为一个向量。例如，一个 RGB 图像的小块 16x16 的图像会被展平为一个大小为16x16x3 的向量。</li>
+<li><strong>嵌入</strong>：通过线性嵌入将这些展平向量转换为一个新的维度 ，从而生成一序列的 patch tokens。</li>
+</ul>
+<h3 id="3-在-Vision-Transformer-中的作用"><a href="#3-在-Vision-Transformer-中的作用" class="headerlink" title="3. 在 Vision Transformer 中的作用"></a>3. <strong>在 Vision Transformer 中的作用</strong></h3><ul>
+<li><strong>输入准备</strong>：将图像转换为 patch tokens 使得 Transformer 模型能够处理这些输入，因为传统的 Transformer 处理的是序列数据。</li>
+<li><strong>特征表示</strong>：每个 patch token 作为不同区域图像的特征表达，通过这序列输入到 Transformer 中进行进一步的特征学习和上下文理解。</li>
+</ul>
+<h3 id="4-优势"><a href="#4-优势" class="headerlink" title="4. 优势"></a>4. <strong>优势</strong></h3><ul>
+<li><strong>捕捉局部特征</strong>：通过将图像分割为块，模型能够更好地捕捉局部特征和图像中的结构信息。</li>
+<li><strong>减少计算复杂度</strong>：相比于处理整个图像，处理较小的 patch 可以显著降低计算消耗，使得 Transformer 适合处理高分辨率图像。</li>
+</ul>
+<h3 id="5-在其他任务中的应用"><a href="#5-在其他任务中的应用" class="headerlink" title="5. 在其他任务中的应用"></a>5. <strong>在其他任务中的应用</strong></h3><ul>
+<li>除了 Vision Transformer，patch tokens 的概念也可以扩展到其他任务中，特别是在需要处理高维数据时，如时序数据中的滑动窗口或局部区域特征表示。</li>
+</ul>
+</blockquote>
+<h3 id="Swin-Transformer-模块"><a href="#Swin-Transformer-模块" class="headerlink" title="Swin Transformer 模块"></a>Swin Transformer 模块</h3><p>​	与传统的多头自注意力 (MSA) 模块不同，swin Transformer 模块是基于移位窗口构建的。图 2 中展示了两个连续的 swin Transformer 模块。每个 swin Transformer 模块由 LayerNorm (LN) 层、多头自注意力模块、残差连接和具有 GELU 非线性的 2 层 MLP 组成。窗口多头自注意力（W-MSA）模块和偏移窗口多头自注意力（SW-MSA）模块分别应用于两个连续的Transformer块中。论文详情：[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2103.14030">2103.14030] Swin Transformer: Hierarchical Vision Transformer using Shifted Windows (arxiv.org)</a></p>
+<p><img src="/2024/10/12/Swin-unet/2.png" alt="image-20241014155459690"></p>
+<h3 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h3><p>​	在编码器中，分辨率 $\frac H4 \times \frac W4 $的c维标记化输入被输入到两个连续的 Swin Transformer 块中进行表征学习，其中特征维度和分辨率保持不变。 同时， patch merging层将减少 token数量（2 倍下采样）并将特征维度增加到原始维度的 2 倍。此过程将在编码器中重复三次</p>
+<p>​	<strong>Patch merging layer：</strong> 输入的图块被分成 4 个部分，并通过 patch merging layer连接在一起。通过这样的处理，特征分辨率将下采样 2 倍。而且，由于连接操作导致特征维度增加 4 倍，因此在连接的特征上应用线性层，将特征维度统一为原始维度的 2 倍。</p>
+<h3 id="Bottleneck"><a href="#Bottleneck" class="headerlink" title="Bottleneck"></a>Bottleneck</h3><p>​	由于Transformer太深而难以收敛，因此仅使用两个连续的Swin Transformer块来构建瓶颈来学习深度特征表示。在瓶颈中，特征维度和分辨率保持不变。</p>
+<h3 id="Decoder"><a href="#Decoder" class="headerlink" title="Decoder"></a>Decoder</h3><p>​	与编码器相对应，基于 Swin Transformer 模块构建了对称解码器。为此，与编码器中使用的块合并层不同，我们在解码器中使用patch expanding层对提取的深度特征进行上采样。patch expanding层将相邻维度的特征图重塑为更高分辨率的特征图（2 倍上采样），并相应地将特征维度降低为原始维度的一半。</p>
+<p>​	<strong>Patch expanding layer</strong>：以第一个patch expanding层为例，在上采样之前，对输入特征（$ \frac W{32} \times \frac H {32} \times 8C$ ）应用一个线性层，将特征维度增加到原始维度的 2 倍（$ \frac W{32} \times \frac H {32} \times 16C$ ）。 然后，我们使用重排操作将输入特征的分辨率扩展为输入分辨率的 2 倍，并将特征维度降低为输入维度的四分之一（$ \frac W{32} \times \frac H {32} \times 16C \longrightarrow \frac W{16} \times \frac H {16} \times 4C$）。</p>
+<h3 id="Skip-connection"><a href="#Skip-connection" class="headerlink" title="Skip connection"></a>Skip connection</h3><p>​		与 U-Net 类似，Skip connection用于将来自编码器的多尺度特征与上采样特征融合。将浅层特征和深层特征连接在一起，以减少下采样造成的空间信息丢失。紧接着一个线性层，连接特征的维度与上采样特征的维度保持不变。。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">高桥凉介</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/10/12/Swin-unet/">http://example.com/2024/10/12/Swin-unet/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">高桥凉介的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/PyTorch/">PyTorch</a><a class="post-meta__tags" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></div><div class="post_share"><div class="social-share" data-image="/2024/10/12/Swin-unet/cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/09/23/Utils/" title="开发中的Utils"><img class="cover" src="/2024/09/23/Utils/cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">开发中的Utils</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/zz.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">高桥凉介</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Swin-Unet"><span class="toc-number">1.</span> <span class="toc-text">Swin-Unet</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-number">1.1.</span> <span class="toc-text">摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="toc-number">1.3.</span> <span class="toc-text">相关工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text">方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E6%A6%82%E8%BF%B0"><span class="toc-number">1.4.1.</span> <span class="toc-text">架构概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%9A%E4%B9%89"><span class="toc-number">1.4.2.</span> <span class="toc-text">1. 定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90-Patch-Tokens"><span class="toc-number">1.4.3.</span> <span class="toc-text">2. 如何生成 Patch Tokens</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%9C%A8-Vision-Transformer-%E4%B8%AD%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.4.4.</span> <span class="toc-text">3. 在 Vision Transformer 中的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BC%98%E5%8A%BF"><span class="toc-number">1.4.5.</span> <span class="toc-text">4. 优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%9C%A8%E5%85%B6%E4%BB%96%E4%BB%BB%E5%8A%A1%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">1.4.6.</span> <span class="toc-text">5. 在其他任务中的应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Swin-Transformer-%E6%A8%A1%E5%9D%97"><span class="toc-number">1.4.7.</span> <span class="toc-text">Swin Transformer 模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Encoder"><span class="toc-number">1.4.8.</span> <span class="toc-text">Encoder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bottleneck"><span class="toc-number">1.4.9.</span> <span class="toc-text">Bottleneck</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Decoder"><span class="toc-number">1.4.10.</span> <span class="toc-text">Decoder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Skip-connection"><span class="toc-number">1.4.11.</span> <span class="toc-text">Skip connection</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.5.</span> <span class="toc-text"></span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/10/12/Swin-unet/" title="Swin-unet"><img src="/2024/10/12/Swin-unet/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Swin-unet"/></a><div class="content"><a class="title" href="/2024/10/12/Swin-unet/" title="Swin-unet">Swin-unet</a><time datetime="2024-10-12T08:13:29.000Z" title="发表于 2024-10-12 16:13:29">2024-10-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/23/Utils/" title="开发中的Utils"><img src="/2024/09/23/Utils/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="开发中的Utils"/></a><div class="content"><a class="title" href="/2024/09/23/Utils/" title="开发中的Utils">开发中的Utils</a><time datetime="2024-09-23T15:57:00.000Z" title="发表于 2024-09-23 23:57:00">2024-09-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By 高桥凉介</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '0HPllxXqZOKDbwcDUvg1lyiE-MdYXbMMI',
+      appKey: 'aa7p7jwKU4meearoyunl9L3s',
+      avatar: 'monsterid',
+      serverURLs: 'https://0HPllxXq.api.lncldglobal.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !true) {
+    if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
